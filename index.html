@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAB Upah Kerja — Hanggar Besi WF/H-Beam</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --steel: #1a1f2e;
+    --rust: #c0390b;
+    --iron: #2d3548;
+    --beam: #3d4a6b;
+    --weld: #f0a500;
+    --spark: #ffd166;
+    --light: #e8eaf0;
+    --muted: #8b93a8;
+    --white: #f5f6fa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--steel);
+    color: var(--light);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Grid texture background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    border-left: 6px solid var(--rust);
+    padding: 0 0 0 20px;
+    margin-bottom: 48px;
+    animation: slideIn 0.6s ease both;
+  }
+
+  .header .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--weld);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .header h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 7vw, 64px);
+    letter-spacing: 2px;
+    line-height: 1;
+    color: var(--white);
+  }
+
+  .header h1 span { color: var(--weld); }
+
+  .header .sub {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── INFO STRIP ── */
+  .info-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 40px;
+    animation: slideIn 0.7s ease both;
+  }
+
+  .info-card {
+    background: var(--iron);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-top: 3px solid var(--rust);
+    padding: 14px 16px;
+    border-radius: 4px;
+  }
+
+  .info-card .k {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    margin-bottom: 4px;
+  }
+
+  .info-card .v {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 32px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .section:nth-child(1) { animation-delay: 0.1s; }
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.3s; }
+  .section:nth-child(4) { animation-delay: 0.4s; }
+  .section:nth-child(5) { animation-delay: 0.5s; }
+  .section:nth-child(6) { animation-delay: 0.6s; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .section-num {
+    width: 32px;
+    height: 32px;
+    background: var(--rust);
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead tr {
+    background: var(--beam);
+  }
+
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--spark);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  thead th:last-child { text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: rgba(255,255,255,0.04); }
+
+  tbody td {
+    padding: 10px 14px;
+    color: var(--light);
+    vertical-align: middle;
+  }
+
+  tbody td:last-child {
+    text-align: right;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--spark);
+  }
+
+  tbody td:nth-child(2),
+  tbody td:nth-child(3) {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .subtotal-row {
+    background: rgba(192, 57, 11, 0.15) !important;
+    border-top: 1px solid var(--rust) !important;
+  }
+
+  .subtotal-row td {
+    font-weight: 600;
+    color: var(--white) !important;
+  }
+
+  .subtotal-row td:last-child {
+    color: var(--weld) !important;
+    font-size: 13px !important;
+  }
+
+  /* ── REKAPITULASI ── */
+  .rekap {
+    background: var(--iron);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-left: 4px solid var(--weld);
+    margin-top: 48px;
+    border-radius: 4px;
+    overflow: hidden;
+    animation: fadeUp 0.6s 0.7s ease both;
+  }
+
+  .rekap-header {
+    background: var(--beam);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rekap-header h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--spark);
+  }
+
+  .rekap table thead th {
+    background: transparent;
+    color: var(--muted);
+  }
+
+  .rekap-total {
+    background: var(--rust) !important;
+    border-top: 2px solid var(--weld) !important;
+  }
+
+  .rekap-total td {
+    font-family: 'Bebas Neue', sans-serif !important;
+    font-size: 18px !important;
+    letter-spacing: 1px;
+    color: white !important;
+    padding: 16px 14px !important;
+  }
+
+  .rekap-total td:last-child {
+    font-size: 20px !important;
+    color: var(--spark) !important;
+  }
+
+  /* ── CATATAN ── */
+  .notes {
+    margin-top: 32px;
+    background: rgba(240,165,0,0.07);
+    border: 1px solid rgba(240,165,0,0.2);
+    border-left: 4px solid var(--weld);
+    padding: 20px;
+    border-radius: 4px;
+    animation: fadeUp 0.6s 0.8s ease both;
+  }
+
+  .notes h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--weld);
+    margin-bottom: 12px;
+  }
+
+  .notes ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .notes li {
+    font-size: 13px;
+    color: var(--muted);
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .notes li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--weld);
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    margin-top: 48px;
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--beam);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── PRINT ── */
+  .print-btn {
+    display: block;
+    margin: 0 auto 40px;
+    padding: 12px 32px;
+    background: var(--rust);
+    color: white;
+    border: none;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+
+  .print-btn:hover { background: #e0450d; }
+
+  @media print {
+    body { background: white; color: #111; }
+    body::before { display: none; }
+    .print-btn { display: none; }
+    .header h1 { color: #111; }
+    .header h1 span { color: var(--rust); }
+    .info-card, table, .rekap, .notes { border-color: #ccc !important; }
+    thead tr { background: #2d3548 !important; }
+    .rekap-total { background: #c0390b !important; }
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="label">Rencana Anggaran Biaya</div>
+    <h1>Upah Kerja<br><span>Hanggar</span> Besi WF</h1>
+    <div class="sub">Lokasi: Sukabumi, Jawa Barat &nbsp;|&nbsp; Standar Upah 2024–2025</div>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">🖨 Cetak / Simpan PDF</button>
+
+  <!-- INFO STRIP -->
+  <div class="info-strip">
+    <div class="info-card">
+      <div class="k">Lebar Bangunan</div>
+      <div class="v">8,00 m</div>
+    </div>
+    <div class="info-card">
+      <div class="k">Panjang Bangunan</div>
+      <div class="v">12,20 m</div>
+    </div>
+    <div class="info-card">
+      <div class="k">Luas Total</div>
+      <div class="v">97,6 m²</div>
+    </div>
+    <div class="info-card">
+      <div class="k">Struktur</div>
+      <div class="v">Besi WF / H-Beam</div>
+    </div>
+    <div class="info-card">
+      <div class="k">Jumlah Kolom</div>
+      <div class="v">6 Titik</div>
+    </div>
+    <div class="info-card">
+      <div class="k">Grid Kolom</div>
+      <div class="v">3 × 2 (400 cm)</div>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">Pekerjaan Pondasi & Sloof Beton</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Uraian Pekerjaan</th>
+          <th>Vol</th>
+          <th>Sat</th>
+          <th>Upah/Sat</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Galian tanah pondasi (6 titik)</td>
+          <td>10,8</td><td>m³</td>
+          <td>Rp 85.000</td><td>Rp 918.000</td>
+        </tr>
+        <tr>
+          <td>Urugan & pemadatan</td>
+          <td>3,6</td><td>m³</td>
+          <td>Rp 65.000</td><td>Rp 234.000</td>
+        </tr>
+        <tr>
+          <td>Besi pondasi + angkur</td>
+          <td>6</td><td>titik</td>
+          <td>Rp 250.000</td><td>Rp 1.500.000</td>
+        </tr>
+        <tr>
+          <td>Bekisting & cor pondasi</td>
+          <td>6</td><td>titik</td>
+          <td>Rp 200.000</td><td>Rp 1.200.000</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td colspan="4">Subtotal Pondasi & Sloof</td>
+          <td>Rp 3.852.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">Pekerjaan Kolom Besi WF</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Uraian Pekerjaan</th>
+          <th>Vol</th>
+          <th>Sat</th>
+          <th>Upah/Sat</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fabrikasi & ereksi kolom WF (6 kolom)</td>
+          <td>6</td><td>titik</td>
+          <td>Rp 450.000</td><td>Rp 2.700.000</td>
+        </tr>
+        <tr>
+          <td>Las & baut base plate</td>
+          <td>6</td><td>titik</td>
+          <td>Rp 200.000</td><td>Rp 1.200.000</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td colspan="4">Subtotal Kolom Besi WF</td>
+          <td>Rp 3.900.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">Pekerjaan Balok & Rangka Utama</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Uraian Pekerjaan</th>
+          <th>Vol</th>
+          <th>Sat</th>
+          <th>Upah/Sat</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Fabrikasi & pasang balok induk WF</td>
+          <td>49,2</td><td>m</td>
+          <td>Rp 75.000</td><td>Rp 3.690.000</td>
+        </tr>
+        <tr>
+          <td>Fabrikasi & pasang balok anak / girt</td>
+          <td>36,6</td><td>m</td>
+          <td>Rp 65.000</td><td>Rp 2.379.000</td>
+        </tr>
+        <tr>
+          <td>Las sambungan & baut</td>
+          <td>24</td><td>titik</td>
+          <td>Rp 150.000</td><td>Rp 3.600.000</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td colspan="4">Subtotal Balok & Rangka Utama</td>
+          <td>Rp 9.669.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">Pekerjaan Rangka Atap</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Uraian Pekerjaan</th>
+          <th>Vol</th>
+          <th>Sat</th>
+          <th>Upah/Sat</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pasang kuda-kuda baja ringan/WF</td>
+          <td>97,6</td><td>m²</td>
+          <td>Rp 55.000</td><td>Rp 5.368.000</td>
+        </tr>
+        <tr>
+          <td>Pasang gording</td>
+          <td>97,6</td><td>m²</td>
+          <td>Rp 25.000</td><td>Rp 2.440.000</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td colspan="4">Subtotal Rangka Atap</td>
+          <td>Rp 7.808.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">Pekerjaan Penutup Atap</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Uraian Pekerjaan</th>
+          <th>Vol</th>
+          <th>Sat</th>
+          <th>Upah/Sat</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pasang atap spandek/galvalum</td>
+          <td>107,4</td><td>m²</td>
+          <td>Rp 45.000</td><td>Rp 4.833.000</td>
+        </tr>
+        <tr>
+          <td>Pasang nok & talang</td>
+          <td>8</td><td>m</td>
+          <td>Rp 50.000</td><td>Rp 400.000</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td colspan="4">Subtotal Penutup Atap</td>
+          <td>Rp 5.233.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 6 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title">Pekerjaan Finishing & Pengecatan Besi</div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Uraian Pekerjaan</th>
+          <th>Vol</th>
+          <th>Sat</th>
+          <th>Upah/Sat</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Cat anti karat (meni) + finishing</td>
+          <td>97,6</td><td>m²</td>
+          <td>Rp 35.000</td><td>Rp 3.416.000</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td colspan="4">Subtotal Pengecatan</td>
+          <td>Rp 3.416.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- REKAPITULASI -->
+  <div class="rekap">
+    <div class="rekap-header">
+      <h2>⚙ Rekapitulasi Upah Kerja</h2>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Uraian Pekerjaan</th>
+          <th style="text-align:right">Jumlah</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;color:var(--muted)">01</td>
+          <td>Pondasi & Sloof Beton</td>
+          <td>Rp 3.852.000</td>
+        </tr>
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;color:var(--muted)">02</td>
+          <td>Kolom Besi WF</td>
+          <td>Rp 3.900.000</td>
+        </tr>
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;color:var(--muted)">03</td>
+          <td>Balok & Rangka Utama</td>
+          <td>Rp 9.669.000</td>
+        </tr>
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;color:var(--muted)">04</td>
+          <td>Rangka Atap</td>
+          <td>Rp 7.808.000</td>
+        </tr>
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;color:var(--muted)">05</td>
+          <td>Penutup Atap</td>
+          <td>Rp 5.233.000</td>
+        </tr>
+        <tr>
+          <td style="font-family:'IBM Plex Mono',monospace;color:var(--muted)">06</td>
+          <td>Finishing & Pengecatan</td>
+          <td>Rp 3.416.000</td>
+        </tr>
+        <tr class="rekap-total">
+          <td colspan="2">TOTAL UPAH KERJA</td>
+          <td>Rp 33.878.000</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CATATAN -->
+  <div class="notes">
+    <h3>⚠ Catatan Penting</h3>
+    <ul>
+      <li>Harga di atas adalah <strong>upah kerja saja</strong>, belum termasuk biaya material/bahan</li>
+      <li>Standar upah mengacu wilayah Sukabumi, Jawa Barat tahun 2024–2025</li>
+      <li>Angka dapat bergeser ±10–15% tergantung negosiasi dengan mandor setempat</li>
+      <li>Pekerjaan lantai rabat beton belum termasuk dalam hitungan ini</li>
+      <li>Dokumen ini bersifat estimasi awal — perlu verifikasi lapangan sebelum kontrak</li>
+    </ul>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>Dokumen RAB — Hanggar Besi WF &nbsp;|&nbsp; Sukabumi, Jawa Barat</p>
+  </div>
+
+</div>
+</body>
+</html>
